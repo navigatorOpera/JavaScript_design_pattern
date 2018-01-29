@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>适配器模式</title>
+</head>
+<body>
+
+	<p>不准确描述:适配器模式就是在不改变现有接口的情况下使外部的数据同样可以试用</p>
+	<script type="text/javascript">
+		//简单的例子
+		const Circle = {
+			shape : 'circle',
+			show  : function(){ //方法名是show
+				console.log('it is ' + this.shape)
+			}
+		}
+
+		const Square = {
+			shape  : 'square',
+			display: function(){ //方法名是display
+				console.log('it is ' + this.shape)
+			}
+		}
+
+		let shape = 'shape'
+		function addShape(shape){
+			
+			console.log(shape.show())
+			
+		}
+
+		//addShape(Circle) // it is circle
+		//addShape(Square) // undefined
+		
+		//add adapter
+
+		const Adapter = {
+
+			show: function(){
+				return Square.display()
+			}
+		}
+
+		//addShape(Circle) // it is circle
+		//addShape(Adapter) // it is square
+
+		//改进版  接受的参数必须是对象  不指定具体对象  不指定对象的出口方法
+		//只指定适配器出口方法
+
+		function Adapter_advance (shape/*object*/, method/*string*/){
+
+			this.shape  = shape
+			this.method = method
+		}
+
+		Adapter_advance.prototype.show = function(){
+
+			let _self  = this,
+				_shape = _self.shape,
+				method = _self.method,
+				index  = Object.keys(_shape).indexOf(method)
+
+				if(index){
+					return _shape[method]()
+				}
+		}
+
+		addShape(Circle) // it is circle
+		addShape(new Adapter_advance(Square, 'display')) // it is square
+	</script>
+</body>
+</html>
